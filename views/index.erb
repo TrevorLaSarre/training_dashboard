@@ -1,0 +1,52 @@
+<div class="schedule">
+  <h2>Training Sessions</h2>
+  
+  <% if @schedule.empty? %>
+    <p id="client">You have no sessions scheduled today</p>
+  <% else %>
+    <% @schedule.each do |time, client| %>
+      <p id="client"><%= "<b>#{format_time(time)}</b>" %>: <%= client %></p>
+    <% end %>
+  <% end %>
+</div>
+
+
+<section class="container">
+  <div id="col-1">
+    <h3>Today's Tasks</h3>
+      <% if @tasks.empty? %>
+        <p>You have no Tasks today</p>
+      <% else %>
+        <% @tasks.each do |task| %>
+          <form method="post" action="/complete/tasks">
+          
+          <% if @completed_tasks.include?(task) %>
+            <div class="strikethrough">
+              <label class="complete" for="tasks[<%= task %>]"><%= task %></label>
+              <input name='<%= task %>'<input type="checkbox" checked></p>
+            </div>
+          <% else %>
+            <label for="tasks[<%= task %>]"><%= task %></label>
+            <input name='<%= task %>'<input type="checkbox"></p>
+          <% end %>
+        <% end %>
+      <% end %>
+      
+            <button class="center" type="submit">Mark Complete</button>
+          </form>
+          <br>
+  </div>
+  
+  <div id="col-1">
+    <h3>Events This Week</h3>
+      <% if @events.empty? %>
+        <p>You have no Events this week</p>
+      <% else %>
+        <% @events.each do |date, events| %>
+          <% events.each do |event| %>
+            <p><%= event %> on <%= date.strftime("%B #{ordinalize(date.day)}") %></p>
+          <% end %>
+        <% end %>
+      <% end %>
+  </div>
+</section>

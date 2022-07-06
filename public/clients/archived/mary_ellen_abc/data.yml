@@ -1,0 +1,10 @@
+---
+:first_name: Mary Ellen
+:last_name: ABC
+:address: 5454 Not Real Ave, Portland, Maine
+:email: jim.smith@fakemail.com
+:phone: 888-392-6658
+:date_of_birth: 2021-12-08
+:training_schedule:
+  Tuesday: '18:00'
+:additional_workouts: []

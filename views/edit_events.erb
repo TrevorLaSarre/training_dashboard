@@ -1,0 +1,33 @@
+<section class="task_container">
+  <div id="col-1">
+    <h2>Events</h2>
+      
+    <% unless !@events || @events.empty? %>
+      <form method="post" action="/events/delete">
+        <% @events.each do |event| %>
+          <h3><%= event[:title] %> <input name="<%= event[:title] %>" type="checkbox"></h3>
+          <label for="<%= event[:title] %>"><%= frequency_message(event) %></label>
+        <% end %>
+        <br>
+
+    <% else %>
+      <em><%= "You have no custom events scheduled" %></em>
+      <br>
+    <% end %>
+    <br>
+  </div>
+</section>
+
+<section class="task_container">
+  <div id="col-2">
+      <button type="submit">Delete Selected</button>
+    </form>
+    
+    <br>
+    <br>
+    
+    <form method="get" action="/events/new">
+      <button type="submit">Add a New Event</button>
+    </form>
+  </div>
+</section>

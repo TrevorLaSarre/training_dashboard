@@ -1,0 +1,29 @@
+<section class="container">
+  <div id="col-1">
+    <h3>Current Clients</h3>
+      <% unless @current_clients.empty? %>
+        <% @current_clients.each do |client| %>
+          <p><a href="/current/<%= client %>"><%= format_input(client) %></a></p>
+        <% end %>
+      <% else %>
+        <p><%= "You Have No Current Clients" %></p>
+      <% end %>
+    <br>
+  </div>
+
+  <div id="col-1">
+    <h3>Archived Clients</h3>
+      <% unless @archived_clients.empty? %>
+        <% @archived_clients.each do |client| %>
+          <p><a href="/archived/<%= client %>"><%= format_input(client) %></a></p>
+        <% end %>
+      <% else %>
+        <p><%= "You Have No Archived Clients" %></p>
+      <% end %>
+    <br>
+  </div>
+</section>
+
+  <form class="center" method="get" action="/clients/new">
+    <button type="submit">Add New Client</button>
+  </form>

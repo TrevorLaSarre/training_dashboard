@@ -1,0 +1,73 @@
+<fieldset>
+  <legend><h2><%= format_input(@directory_name) %></h2></legend>
+
+  <form method="post" action="/client/edit/<%= @directory_name %>">
+  <section class="form_container_1">
+    <div>
+      <label for="first_name">First Name:</label>
+      <input name="first_name" value="<%= session.delete('first_name') %>"> </input>
+      
+      <label for="last_name">Last Name:</label>
+      <input name="last_name" value="<%= session.delete('last_name') %>"></input>
+    </div>
+    <br>
+    
+    <div>
+      <label for="address">Address:</label>
+      <input name="address" size="60" value="<%= session.delete('address') %>" ></input>
+    </div>
+    <br>
+    
+    <div>
+      <label for="email">Email:</label>
+      <input name="email" value="<%= session.delete('email') %>"></input>
+      
+      <label for="phone">Phone Number:</label>
+      <input name="phone" value="<%= session.delete('phone') %>"></input>
+    </div>
+    <br>
+    
+    <div id="date_of_birth">
+      <label for="date_of_birth">Date of Birth:</label>
+      <input type="date" name="date_of_birth" value="<%= session.delete('date_of_birth') %>"></input>
+    </div>
+    <br>
+  </section>
+
+  <section class="form_container">
+     <div id="side">
+      <label id="main_label">Training Schedule:</label>
+    
+      <% days.each_with_index do |day, idx| %>
+      <div>
+        <label for="training_schedule[]"><%= day %></label>
+        <% if session['training_schedule'] %>
+          <input type="time" value="<%= session['training_schedule'][idx] %>" name="training_schedule[<%= day %>]">
+        <% else %>
+          <input type="time" name="training_schedule[<%= day %>]">
+        <% end %>
+      </div>
+      <% end %>
+      <% session.delete('training_schedule') %>
+    </div>
+    
+    <div id="side">
+      <label id="main_label">Additional Workouts:</label>
+      
+      <% days.each do |day| %>
+      <div>
+        <% if session['additional_workouts'] && session['additional_workouts'].include?(day) %>
+          <input type="checkbox" name="additional_workouts[<%= day %>]" checked>
+        <% else %>
+          <input type="checkbox" name="additional_workouts[<%= day %>]">
+        <% end %>
+        <label for="additional_workouts[]"><%= day %></label>
+      </div>
+      <% end %>
+      <% session.delete('additional_workouts') %>
+    </div>
+  </section>
+  <button class="center" type="submit">Submit Edits</button>
+  </form>
+
+</fieldset>

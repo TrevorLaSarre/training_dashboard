@@ -1,0 +1,133 @@
+/* Add a black background color to the top navigation */
+.topnav {
+  background-color: #333;
+  overflow: hidden;
+}
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
+}
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+  background-color: #04AA6D;
+  color: white;
+}
+
+a {
+  color: #1E90FF
+}
+
+.header {
+  text-align: center;
+}
+
+.header #date{
+  color: #787878;
+  font-size: 15px;
+}
+
+.flash {
+  text-align: center;
+  font-weight: bold;
+  padding: 10px 12px;
+}
+
+#success { 
+  background: rgba(0, 255, 0, 0.4);
+}
+
+#error { 
+  background: rgba(255, 0, 0, 0.4);
+}
+
+.schedule {
+  border: inset;
+  text-align: center;
+}
+
+.schedule h2 {
+  border-bottom: groove;
+  border-top: groove;
+  background-color: #F0F0F0;
+  margin: 0px;
+  padding: 14px 16px;
+}
+
+.strikethrough {
+  text-decoration: line-through;
+  color: #1E90FF;
+}
+
+.complete {
+  color: black;
+}
+
+#client {
+  font-size: 18px;
+  border-bottom: inset;
+}
+
+.center {
+  text-align: center;
+}
+
+.container {
+  display: flex;
+  text-align: center;
+}
+
+.container h3 {
+  border-bottom: groove;
+  border-top: groove;
+  background-color: #F0F0F0;
+}
+
+.form_container {
+  display: flex;
+}
+
+#side {
+  margin: 5px 30px;
+}
+
+#date {
+  margin: 0px 5px;
+}
+
+#main_label {
+  margin-bottom: 10px;;
+}
+
+#col-1 {
+  margin: 25px 50px;
+  border: outset;
+  flex: 1;
+}
+
+#col-2 {
+  flex: 1;
+}
+
+.task_container {
+  display: flex;
+  text-align: center;
+}
+
+.task_container h3 {
+  border-bottom: groove;
+  border-top: groove;
+  background-color: #F0F0F0;
+}

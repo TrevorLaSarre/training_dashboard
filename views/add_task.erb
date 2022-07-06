@@ -1,0 +1,47 @@
+<fieldset>
+  <legend><h2>Task Details</h2></legend>
+
+  <form method="post" action="/new_task">
+    
+    <div>
+      <label for="task">Task:</label>
+      <input name="task" size="60" value="<%= session.delete(:title) %>"></input>
+    </div>
+    <br>
+    
+  <section class="form_container">
+    <div id="side">
+      <label>Perform on:</label>
+      
+      <% days.each do |day| %>
+      <div>
+        <br>
+        <% if session[:schedule] && session[:schedule].include?(day) %>
+          <input type="checkbox" name="<%= day %>" checked>
+        <% else %>
+          <input type="checkbox" name="<%= day %>">
+        <% end %>
+        <label for="<%= day %>"><%= day %></label>
+      </div>
+      <% end %>
+      <% session.delete(:schedule) %>
+    </div>
+    
+    <div id="side">
+      <label>Frequency:</label>
+      <div>
+        <br>
+        <input type="radio" name="frequency" value="this_week">
+        <label for="this_week">This Week Only</label><br>
+        <br>
+        <input type="radio" name="frequency"  value="every_week">
+        <label for="every_week">Every Week</label><br>
+      </div>
+    </div>
+  </section>
+  
+    <br>
+    <button type="submit">Add Task</button>
+  
+  </form>
+</fieldset>

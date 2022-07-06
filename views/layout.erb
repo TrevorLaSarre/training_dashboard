@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= @title %></title>
+    <link rel="stylesheet" href="/stylesheets/dashboard.css">
+  </head>
+
+  <body>
+    <div class="topnav">
+      <a href="/">Dashboard</a></li>
+      <a href="/clients">Clients</a></li>
+      <a href="/tasks_and_events">Tasks and Events</a></li>
+    </div>
+    
+    <div class="header">
+      <h1><%= @title %></h1>
+      <div id="date">
+        <h2><%= Date.today.strftime("Today is %A, %B #{ordinalize(Date.today.day)}") %></h2>
+      </div>
+    </div>
+    
+    <div class="content">
+      <% if session[:error] %>
+        <p class="flash" id="error"><%= session.delete(:error) %></p>
+      <% elsif session[:success] %>
+        <p class="flash" id="success"><%= session.delete(:success) %></p>
+      <% end %>
+      
+      <%= yield %>
+    </div>
+  </body>
+</html>

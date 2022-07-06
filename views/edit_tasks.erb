@@ -1,0 +1,36 @@
+<section class="task_container">
+  <div id="col-1">
+    <h2>Weekly Tasks</h2>
+
+    <% days.each do |day| %>
+      <h3><%= day %></h3>
+        <% if @tasks[day] %>
+          <form method="post" action="/tasks/delete">
+          <% @tasks[day].each do |task| %>
+            <div>
+              <label for="<%= day %>[<%= task %>]"><%= task %></label>
+              <input name="<%= day %>[<%= task %>]" type="checkbox">
+            </div>
+          <% end %>
+        <% else %>
+          <em><%= "You have no custom tasks scheduled on #{day}s" %></em>
+          <br>
+        <% end %>
+      <% end %>
+    <br>
+  </div>
+</section>
+
+<section class="task_container">
+  <div id="col-2">
+      <button type="submit">Delete Selected</button>
+    </form>
+    
+    <br>
+    <br>
+    
+    <form method="get" action="/tasks/new">
+      <button type="submit">Add a New Task</button>
+    </form>
+  </div>
+</section>

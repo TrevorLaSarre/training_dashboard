@@ -1,0 +1,60 @@
+<section class="container">
+  <div id="col-1">
+    <h2>Information</h2>
+    
+      <% @client_data.each do |key, value| %>
+        <% unless key.to_s.include?("name") %>
+          <% value = format_values(key, value) %>
+          <% key = "<b>#{format_input(key)}</b>" %>
+          <p><%= "#{key}: #{value}" %></p>
+        <% end %>
+      <% end %>
+  </div>
+
+  <div id="col-1">
+    <h2>Options</h2>
+    
+    <br>
+    <% if @status == "current" %>
+      <div>
+         <form method="get" action="/current/<%= @directory_name %>/documents">
+          <button type="submit">View Client Documents</button>
+        </form>
+    
+        <br>
+        
+        <form method="post" action="/archive/<%= @directory_name %>">
+          <button type="submit">Move Client to Archive</button>
+        </form>
+      </div>
+      
+      <br>
+      
+      <div>
+        <form method="get" action="/edit/<%= @directory_name %>">
+          <button type="submit">Edit Client Information</button>
+        </form>
+      </div>
+    <% else %>
+      <div>  
+        <form method="get" action="/archived/<%= @directory_name %>/documents">
+          <button type="submit">View Client Documents</button>
+        </form>
+    
+        <br>
+        
+        <form method="post" action="/restore/<%= @directory_name %>">
+          <button type="submit">Move Client to Current</button>
+        </form>
+      </div>
+      
+      <br>
+      
+      <div>
+        <form method="post" action="/delete/<%= @directory_name %>">
+          <button type="submit">Delete Client</button>
+        </form>
+      </div>
+    <% end %>
+  </div>
+</section>

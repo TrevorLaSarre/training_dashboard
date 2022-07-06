@@ -1,0 +1,41 @@
+<fieldset>
+  <legend><h2>New Event Details</h2></legend>
+
+  <form method="post" action="/new_event">
+    
+    <div>
+      <label for="title">Event:</label>
+      <input name="title" size="60" value="<%= session.delete(:title) %>"></input>
+    </div>
+    <br>
+    
+    
+    <section class="form_container">
+      <div id="date">
+        <label for="date">Date:</label>
+        <input type="date" name="date" value="<%= session.delete(:date) %>"></input>
+      </div>
+      
+       <div id="side">
+        <label>Frequency:</label>
+        <div>
+          <br>
+          <input type="radio" name="frequency" value="once">
+          <label for="once">One Time Only</label><br>
+          <br>
+          <input type="radio" name="frequency"  value="monthly">
+          <label for="monthly">Monthly</label><br>
+          <br>
+          <input type="radio" name="frequency"  value="quarterly">
+          <label for="quarterly">Quarterly</label><br>
+          <br>
+          <input type="radio" name="frequency"  value="annual">
+          <label for="annual">Annual</label><br>
+        </div>
+      </div>
+    </section>
+    
+    <button type="submit">Add Event</button>
+  </form>
+
+</fieldset>

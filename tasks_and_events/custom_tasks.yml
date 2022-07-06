@@ -1,0 +1,16 @@
+---
+- :title: Text old clients
+  :schedule:
+  - Tuesday
+  - Wednesday
+  :frequency: every_week
+- :title: See if "Tasks" Work
+  :schedule:
+  - Monday
+  :frequency: this_week
+  :delete_on: 2022-07-11
+- :title: See if "Tasks" Work
+  :schedule:
+  - Tuesday
+  :frequency: this_week
+  :delete_on: 2022-07-12

@@ -1,0 +1,30 @@
+<section class="container">
+  <div id="col-1">
+    <% unless @documents.empty? %>
+      <form method="post" action="/<%= @status %>/<%= @directory_name %>/documents/delete">
+        <% @documents.each do |document| %>
+          <p><a href="/<%= @status %>/<%= @directory_name %>/documents/<%= document %>"><%= document %></a>
+          <input name="<%= document %>" type="checkbox"></p>
+        <% end %>
+        <br><br>
+        <button type="submit">Delete Selected</button>
+        <br><br>
+      </form>
+    <% else %>
+      <p class="center"><%= "#{format_input(@directory_name)} Has No Saved Documents" %></p>
+    <% end %>
+  </div>
+  
+  <div id="col-1">  
+    <form method="post" action="/documents/add/<%= @status %>/<%= @directory_name %>" enctype="multipart/form-data">
+      <br>
+      <label for="file">Add a pdf or txt file to <%=@title %></label>
+      <br><br>
+      <input type="file" name="file" accept=".pdf, .txt">
+      <br><br>
+      <input name="filename" size="30" placeholder="Save file as..." >
+      <button type="submit">Save File</button>
+      <br><br>
+    </form>
+  </div>
+</section>

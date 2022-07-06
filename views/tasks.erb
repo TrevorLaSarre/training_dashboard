@@ -1,0 +1,48 @@
+<section class="task_container">
+  <div id="col-1">
+    <h2>Tasks for the Next 7 Days</h2>
+    
+    <% @tasks.each.with_index do |(day, tasks), idx| %>
+      <h3><%= "#{day} the #{ordinalize((Date.today + idx).day)}" %></h3>
+        <% tasks.each do |task| %>
+          <% if task == "You have no tasks scheduled" %>
+            <p><em><%= task  %></em></p>
+          <% else %>
+            <p><b><%= task  %></b></p>
+          <% end %>
+        <% end %>
+    <% end %>
+    <br>
+  </div>
+
+  <div id="col-1">
+  <h2>Events in the Next 30 Days</h2>
+
+    <% if @events.empty? %>
+      <h3>You have no upcoming events</h3>
+    <% else %>
+      <%@events.each do |date, events| %>
+        <h3><%= date.strftime("%B #{ordinalize(date.day)}") %></h3>
+      
+        <% events.each do |event| %>
+          <p><b><%= event %></b></p>
+        <% end %>
+      <% end %>
+    <% end %>
+    <br>
+  </div>
+</section>
+
+<section class="task_container">
+  <div id="col-2">
+    <form method="get" action="/tasks/edit">
+      <button type="submit">All Tasks</button>
+    </form>
+  </div>
+
+<div id="col-2">
+<form method="get" action="/events/edit">
+  <button type="submit">All Events</button>
+</form>
+</div>
+</section>

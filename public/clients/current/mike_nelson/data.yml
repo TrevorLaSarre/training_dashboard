@@ -1,0 +1,12 @@
+---
+:first_name: Mike
+:last_name: Nelson
+:address: 1589 Whataburger Ln, Philly, PA
+:email: Nelson.mike@gmail.org
+:phone: 555-292-1086
+:date_of_birth: 1971-04-17
+:training_schedule:
+  Tuesday: '06:00'
+  Thursday: '06:00'
+:additional_workouts:
+- Saturday
