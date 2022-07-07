@@ -15,7 +15,7 @@
   <div id="col-1">
     <h3>Today's Tasks</h3>
       <% if @tasks.empty? %>
-        <p>You have no Tasks today</p>
+        <p>You have no tasks today</p>
       <% else %>
         <% @tasks.each do |task| %>
           <form method="post" action="/complete/tasks">
@@ -33,6 +33,7 @@
       <% end %>
       
             <button class="center" type="submit">Mark Complete</button>
+            <br>
           </form>
           <br>
   </div>
@@ -40,7 +41,7 @@
   <div id="col-1">
     <h3>Events This Week</h3>
       <% if @events.empty? %>
-        <p>You have no Events this week</p>
+        <p>You have no events this week</p>
       <% else %>
         <% @events.each do |date, events| %>
           <% events.each do |event| %>

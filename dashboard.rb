@@ -502,25 +502,8 @@ get "/clients" do
   erb :clients
 end
 
-# Displays data for specific client
-get "/:status/:client" do
-  @title = format_input(params[:client])
-  @status = params[:status]
-  group = @status == "current" ? current_clients : archived_clients
-  
-  @directory_name = params[:client]
-  
-  @directory_path = File.join(group, @directory_name)
-  data_path = File.join(@directory_path, 'data.yml')
-  
-  @client_data = YAML.load_file(data_path)
-  
-  erb :client
-end
-
+# Displays a specific client's document page
 get "/:status/:client/documents" do
-  ['splat', 'captures'].each { |x| params.delete(x) }
-
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients
   
@@ -591,12 +574,35 @@ get "/events/edit" do
   erb :edit_events
 end
 
-get "/:status/:client/documents/:document" do
+# Displays a document belonging to a client
+get "/:status/:client/documents/:idx" do
   @status = params[:status]
   @client = params[:client]
-  @filename = params[:document]
+  file_index = params[:idx].to_i
+  
+  group = @status == "current" ? current_clients : archived_clients
+  directory_path = File.join(group, @client)
+  documents_directory = File.join(directory_path, 'documents')
+  
+  @filename = Dir.children(documents_directory).sort[file_index]
   
   erb :view_document
+end
+
+# Displays data for specific client
+get "/:status/:client" do
+  @title = format_input(params[:client])
+  @status = params[:status]
+  group = @status == "current" ? current_clients : archived_clients
+  
+  @directory_name = params[:client]
+  
+  @directory_path = File.join(group, @directory_name)
+  data_path = File.join(@directory_path, 'data.yml')
+  
+  @client_data = YAML.load_file(data_path)
+  
+  erb :client
 end
 
 # Formats "new task" form data, validates inputs, and adds the task to
@@ -785,10 +791,15 @@ post "/events/delete" do
   redirect "/events/edit"
 end
 
-post "/documents/add/:status/:client" do
+#Validates, formats, and adds a file to client's documents
+post "/:status/:client/documents/add" do
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients
-  
+
+  client_path = File.join(group, params[:client])
+  document_path = File.join(client_path, 'documents')
+  file_path = File.join(document_path, filename)
+
   error_message = validate_file(params[:file], params[:filename])
   if error_message
     session[:error] = error_message
@@ -796,11 +807,9 @@ post "/documents/add/:status/:client" do
   else
     file = params[:file][:tempfile]
     ext = File.extname(params[:file][:filename])
-    filename = params[:filename] + ext
-    
-    client_path = File.join(group, params[:client])
-    document_path = File.join(client_path, 'documents')
-    file_path = File.join(document_path, filename)
+    filename = params[:filename]
+    filename.gsub!(File.extname(filename), '')
+    filename += ext
     
     File.open(file_path, 'wb') do |f|
         f.write(file.read)
@@ -810,6 +819,7 @@ post "/documents/add/:status/:client" do
   end
 end
 
+# Deletes selected files from client's documents
 post "/:status/:client/documents/delete" do
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients

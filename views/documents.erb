@@ -1,9 +1,9 @@
 <section class="container">
   <div id="col-1">
     <% unless @documents.empty? %>
-      <form method="post" action="/<%= @status %>/<%= @directory_name %>/documents/delete">
-        <% @documents.each do |document| %>
-          <p><a href="/<%= @status %>/<%= @directory_name %>/documents/<%= document %>"><%= document %></a>
+      <form method="post" action="documents/delete">
+        <% @documents.each_with_index do |document, idx| %>
+          <p><a href="documents/<%= idx %>"><%= document %></a>
           <input name="<%= document %>" type="checkbox"></p>
         <% end %>
         <br><br>
@@ -16,7 +16,7 @@
   </div>
   
   <div id="col-1">  
-    <form method="post" action="/documents/add/<%= @status %>/<%= @directory_name %>" enctype="multipart/form-data">
+    <form method="post" action="documents/add" enctype="multipart/form-data">
       <br>
       <label for="file">Add a pdf or txt file to <%=@title %></label>
       <br><br>
