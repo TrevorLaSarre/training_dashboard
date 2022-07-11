@@ -569,7 +569,7 @@ end
 get "/events/edit" do
   @title = "Edit Events"
   events = YAML.load_file(event_path)
-  @events = events.sort_by { :title }
+  @events = events ? events.sort_by { :title } : {}
   
   erb :edit_events
 end
