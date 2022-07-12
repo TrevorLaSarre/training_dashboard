@@ -613,6 +613,7 @@ post "/new_task" do
   
   if session[:error]
     configure_form(task)
+    status 422
     erb :add_task
   else
     session[:success] = successful_add(task[:title], "Tasks")
@@ -631,6 +632,7 @@ post "/new_event" do
   
   if session[:error]
     configure_form(event)
+    status 422
     erb :add_event
   else
     session[:success] = successful_add(event[:title], "Events")
@@ -648,6 +650,7 @@ post "/new_client" do
   
   if session[:error]
     configure_form(data)
+    status 422
     erb :new_client
   else
     directory_name = [data[:first_name], data[:last_name]].map do |name|
@@ -681,6 +684,7 @@ post "/client/edit/:name" do
 
   if session[:error]
     configure_form(data)
+    status 422
     erb :new_client
   else
     directory_name = [data[:first_name], data[:last_name]].map do |name|
@@ -795,6 +799,12 @@ end
 post "/:status/:client/documents/add" do
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients
+  
+  file = params[:file][:tempfile]
+  ext = File.extname(params[:file][:filename])
+  filename = params[:filename]
+  filename.gsub!(File.extname(filename), '')
+  filename += ext
 
   client_path = File.join(group, params[:client])
   document_path = File.join(client_path, 'documents')
@@ -805,12 +815,6 @@ post "/:status/:client/documents/add" do
     session[:error] = error_message
     redirect "/#{params[:status]}/#{params[:client]}/documents"
   else
-    file = params[:file][:tempfile]
-    ext = File.extname(params[:file][:filename])
-    filename = params[:filename]
-    filename.gsub!(File.extname(filename), '')
-    filename += ext
-    
     File.open(file_path, 'wb') do |f|
         f.write(file.read)
     end
