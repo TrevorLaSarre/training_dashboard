@@ -23,11 +23,11 @@
           <% if @completed_tasks.include?(task) %>
             <div class="strikethrough">
               <label class="complete" for="tasks[<%= task %>]"><%= task %></label>
-              <input name='<%= task %>'<input type="checkbox" checked></p>
+              <input name="<%= task %>"<input type="checkbox" checked></p>
             </div>
           <% else %>
             <label for="tasks[<%= task %>]"><%= task %></label>
-            <input name='<%= task %>'<input type="checkbox"></p>
+            <input name="<%= task %>"<input type="checkbox"></p>
           <% end %>
         <% end %>
       <% end %>

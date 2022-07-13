@@ -38,17 +38,12 @@
      <div id="side">
       <label id="main_label">Training Schedule:</label>
     
-      <% days.each_with_index do |day, idx| %>
-      <div>
-        <label for="training_schedule[]"><%= day %></label>
-        <% if session['training_schedule'] %>
-          <input type="time" value="<%= session['training_schedule'][idx] %>" name="training_schedule[<%= day %>]">
-        <% else %>
+      <% days.each do |day| %>
+        <div>
+          <label for="training_schedule[]"><%= day %></label>
           <input type="time" name="training_schedule[<%= day %>]">
-        <% end %>
-      </div>
+        </div>
       <% end %>
-      <% session.delete('training_schedule') %>
     </div>
     
     <div id="side">

@@ -6,6 +6,7 @@ require "date"
 require "uri"
 require 'street_address'
 require 'fileutils'
+require "sinatra/reloader" if development?
 
 configure do
   enable :sessions
@@ -399,6 +400,7 @@ end
 def format_task(input)
   schedule = input.select { |_, v| v == 'on' }.keys
   task = {title: input[:task], schedule: schedule, frequency: input[:frequency]}
+  task[:title].gsub!('"', "'")
   task[:delete_on] = (Date.today + 7) if input[:frequency] == "this_week"
   task
 end
@@ -696,6 +698,7 @@ post "/client/edit/:name" do
     if directory_name != params[:name]
       old_directory_path = File.join(current_clients, params[:name])
       FileUtils.mv(old_directory_path, directory_path)
+      FileUtils.rm_rf(old_directory_path)
     end
 
     data = format_client(data)

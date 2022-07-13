@@ -10,5 +10,9 @@ gem "minitest"
 gem "yaml"
 gem "date"
 gem "uri"
-gem 'street_address'
+gem 'StreetAddress'
 gem 'fileutils'
+
+group :production do
+  gem "puma"
+end
