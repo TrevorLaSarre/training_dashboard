@@ -94,6 +94,14 @@ end
 
 # File Paths
 
+def client_directory
+  if ENV["RACK_ENV"] == "test"
+    File.expand_path("../test/public/clients", __FILE__)
+  else
+    File.expand_path("../public/clients", __FILE__)
+  end
+end
+
 def current_clients
   if ENV["RACK_ENV"] == "test"
     File.expand_path("../test/public/clients/current", __FILE__)
@@ -159,6 +167,12 @@ def date_this_year(date)
 end
 
 # Locating, Parsing, and Validating Data
+
+def setup_client_directories
+  Dir.mkdir(client_directory) unless Dir.exist?(client_directory)
+  Dir.mkdir(current_clients) unless Dir.exist?(current_clients)
+  Dir.mkdir(archived_clients) unless Dir.exist?(archived_clients)
+end
 
 def data_paths(client_directory_path)
   client_names = sorted_clients(client_directory_path)
@@ -479,6 +493,7 @@ end
 # Displays the day's schedule, tasks, and events, and deletes yesterday's
 # "completed tasks" from session data
 get "/" do
+  setup_client_directories
   @title = "Dashboard"
 
   @tasks = todays_custom_tasks + tomorrows_workouts
