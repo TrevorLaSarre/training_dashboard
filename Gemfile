@@ -12,7 +12,3 @@ gem "date"
 gem "uri"
 gem 'StreetAddress'
 gem 'fileutils'
-
-group :production do
-  gem "puma"
-end

@@ -6,7 +6,6 @@ require "date"
 require "uri"
 require 'street_address'
 require 'fileutils'
-require "sinatra/reloader" if development?
 
 configure do
   enable :sessions
@@ -45,31 +44,31 @@ helpers do
         "#{value}"
     end
   end
-  
+
   def format_time(time)
     time.strftime("%l:%M %p")
   end
-  
+
   def format_time_string(time)
     Time.parse(time).strftime("%l:%M %p")
   end
-  
+
   def join_and(arr)
     arr.map.with_index do |word, idx|
       case idx
       when (arr.size - 2)
         arr.size > 2 ? "#{word}, and" : "#{word} and"
-      when (arr.size - 1) 
+      when (arr.size - 1)
         word
       else
         "#{word},"
       end
     end.join(' ')
   end
-  
+
   def frequency_message(event)
     date = Date.parse(event[:date])
-    
+
     case event[:frequency]
     when 'monthly'
       if date.day == 31
@@ -80,7 +79,7 @@ helpers do
     when 'quarterly'
       occurrences = occurrances(event[:date], event[:frequency])
       days = occurrences.map { |x| x.strftime("%-d") }
-      occurrences.map!.with_index do |x, idx| 
+      occurrences.map!.with_index do |x, idx|
         x.strftime("%B #{ordinalize(days[idx])}")
       end
       occurrences = join_and(occurrences)
@@ -163,7 +162,7 @@ end
 
 def data_paths(client_directory_path)
   client_names = sorted_clients(client_directory_path)
-  
+
   client_names.map do |name|
     path = File.join(client_directory_path, name)
     File.join(path, 'data.yml')
@@ -183,7 +182,7 @@ def validate_client(data)
     case key
     when :first_name, :last_name
       if value.empty? && !arr.include?("a complete name")
-        arr << "a complete name" 
+        arr << "a complete name"
       end
     when :date_of_birth
       if value.empty? || Date.today < Date.parse(value)
@@ -199,7 +198,7 @@ def validate_client(data)
       end
     end
   end
-    
+
   errors = errors.sort_by { |x| x.size }
   "Please enter #{join_and(errors)}" unless errors.empty?
 end
@@ -213,7 +212,7 @@ def validate_task(details)
       arr << "select a frequency" if key == :frequency
     end
   end
-  
+
   "Please #{join_and(errors)}" unless errors.empty?
 end
 
@@ -225,7 +224,7 @@ def validate_event(details)
       arr << "select a frequency" if key == :frequency
     end
   end
-  
+
   "Please #{join_and(errors)}" unless errors.empty?
 end
 
@@ -239,7 +238,7 @@ def format_client(data)
   data[:training_schedule].delete_if { |_, v| v.empty? }
   data[:additional_workouts] ||= {}
   data[:additional_workouts] = data[:additional_workouts].keys
-  
+
   data
 end
 
@@ -282,7 +281,7 @@ end
 def birthdays_this_month
   data_paths = data_paths(current_clients) + data_paths(archived_clients)
   birthdays = parse_data(data_paths, :date_of_birth)
-  
+
   birthdays.each_with_object({}) do |(name, date), hsh|
     if this_month?(date)
       hsh[date] ||= []
@@ -296,41 +295,41 @@ def birthdays_this_week
 end
 
 # Training Schedule and Additional Workouts
-  
+
   def todays_schedule
    data_paths = data_paths(current_clients)
    training_schedule = parse_data(data_paths, :training_schedule)
-    
+
     training_schedule.each_with_object({}) do |(name, schedule), hsh|
       hsh[Time.parse(schedule[today])] = name if schedule.include?(today)
     end.sort.to_h
   end
-  
+
   def weekly_workouts
     data_paths = data_paths(current_clients)
     additional_workouts = parse_data(data_paths, :additional_workouts)
-    
+
     days.each_with_object({}) do |day, hsh|
       hsh[day] ||= []
-  
+
       additional_workouts.each do |name, schedule|
         hsh[day] << name if schedule.include?(day)
       end
     end
   end
-  
+
   def tomorrows_workouts
-    workouts = weekly_workouts[tomorrow].map do |name| 
-      "Send tomorrow's workout to #{name}" 
+    workouts = weekly_workouts[tomorrow].map do |name|
+      "Send tomorrow's workout to #{name}"
     end
-    
+
     if tomorrow == "Saturday"
-      workouts += weekly_workouts["Sunday"].map do |name| 
+      workouts += weekly_workouts["Sunday"].map do |name|
         "Send Sunday's workout to #{name}"
       end
     end
-    
-    workouts 
+
+    workouts
   end
 
 # Custom Tasks
@@ -345,8 +344,8 @@ def weekly_custom_tasks
         delete_expired_tasks
         next
       elsif key == :schedule
-        value.each do |day| 
-          hsh[day] ||= [] 
+        value.each do |day|
+          hsh[day] ||= []
           hsh[day] << task[:title]
         end
       end
@@ -364,13 +363,13 @@ def tasks_this_week
 
   sorted_days.each_with_object({}) do |day, hsh|
     hsh[day] ||= []
-    
+
     hsh[day] += weekly_custom_tasks[day] if weekly_custom_tasks.has_key?(day)
-    
+
     unless weekly_workouts[day].empty?
       hsh[day] << "Client workouts due: #{join_and(weekly_workouts[day])}"
     end
-    
+
     hsh[day] << "You have no tasks scheduled" if hsh[day].empty?
   end
 end
@@ -382,11 +381,11 @@ end
 
 def delete_expired_tasks
   tasks = YAML.load_file(task_path)
-  
-  tasks.reject! do |task| 
+
+  tasks.reject! do |task|
     task[:delete_on] && task[:delete_on] <= Date.today
   end
-  
+
   File.write(task_path, tasks.to_yaml)
 end
 
@@ -429,7 +428,7 @@ def occurrances(date, frequency)
   day = Date.parse(date).day
   month = Date.parse(date).month
   result = []
-  
+
   case frequency
   when 'monthly'
     1.upto(12) { |x| result << "#{day}/#{x}" }
@@ -443,28 +442,28 @@ def occurrances(date, frequency)
     delete_expired_events
     return [Date.parse(date)]
   end
-  
+
   result.map { |date| make_valid(date) }
 end
 
 def delete_expired_events
   events = YAML.load_file(event_path)
-  
-  events.reject! do |event| 
+
+  events.reject! do |event|
     event[:frequency] == 'once' && Date.parse(event[:date]) < Date.today
   end
-  
+
   File.write(event_path, events.to_yaml)
 end
-  
+
 def make_valid(date)
   day, month = date.split('/').map(&:to_i)
   year = Date.today.year
-  
+
   until Date.valid_date?(year, month, day)
     day -= 1
   end
-  
+
   Date.new(year, month, day)
 end
 
@@ -477,21 +476,21 @@ end
 
 # Routes
 
-# Displays the day's schedule, tasks, and events, and deletes yesterday's 
-# "completed tasks" from session data 
+# Displays the day's schedule, tasks, and events, and deletes yesterday's
+# "completed tasks" from session data
 get "/" do
   @title = "Dashboard"
-  
+
   @tasks = todays_custom_tasks + tomorrows_workouts
   @events = birthdays_this_week.merge(events_this_week) do |key, new, old|
     new + old
   end.sort.to_h
   @schedule = todays_schedule
-  
+
 
   @completed_tasks = session[:completed_tasks] ? session[:completed_tasks] : []
   @completed_tasks.delete_if { |_, v| v != Date.today }
-  
+
   erb :index
 end
 
@@ -500,7 +499,7 @@ get "/clients" do
   @title = "Clients"
   @current_clients = sorted_clients(current_clients)
   @archived_clients = sorted_clients(archived_clients)
-  
+
   erb :clients
 end
 
@@ -508,15 +507,15 @@ end
 get "/:status/:client/documents" do
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients
-  
+
   @directory_name = params[:client]
-  
+
   directory_path = File.join(group, @directory_name)
   path = File.join(directory_path, 'documents')
-  
+
   @documents = Dir.children(path).sort
   @title = "#{format_input(@directory_name)}'s Documents"
-  
+
   erb :documents
 end
 
@@ -532,7 +531,7 @@ get "/tasks_and_events" do
   @events = birthdays_this_month.merge(events_this_month) do |key, new, old|
     new + old
   end.sort.to_h
-  
+
   erb :tasks
 end
 
@@ -549,13 +548,13 @@ end
 # Displays pre-populated form for editing client data
 get "/edit/:name" do
   @directory_name = params[:name]
-  
+
   @directory_path = File.join(current_clients, @directory_name)
   data_path = File.join(@directory_path, 'data.yml')
-  
+
   @data = YAML.load_file(data_path)
   configure_form(@data)
-  
+
   erb :edit_client
 end
 
@@ -563,7 +562,7 @@ end
 get "/tasks/edit" do
   @title = "Edit Tasks"
   @tasks = weekly_custom_tasks
-  
+
   erb :edit_tasks
 end
 
@@ -572,7 +571,7 @@ get "/events/edit" do
   @title = "Edit Events"
   events = YAML.load_file(event_path)
   @events = events ? events.sort_by { :title } : {}
-  
+
   erb :edit_events
 end
 
@@ -581,13 +580,13 @@ get "/:status/:client/documents/:idx" do
   @status = params[:status]
   @client = params[:client]
   file_index = params[:idx].to_i
-  
+
   group = @status == "current" ? current_clients : archived_clients
   directory_path = File.join(group, @client)
   documents_directory = File.join(directory_path, 'documents')
-  
+
   @filename = Dir.children(documents_directory).sort[file_index]
-  
+
   erb :view_document
 end
 
@@ -596,14 +595,14 @@ get "/:status/:client" do
   @title = format_input(params[:client])
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients
-  
+
   @directory_name = params[:client]
-  
+
   @directory_path = File.join(group, @directory_name)
   data_path = File.join(@directory_path, 'data.yml')
-  
+
   @client_data = YAML.load_file(data_path)
-  
+
   erb :client
 end
 
@@ -612,7 +611,7 @@ end
 post "/new_task" do
   task = format_task(params)
   session[:error] = validate_task(task)
-  
+
   if session[:error]
     configure_form(task)
     status 422
@@ -620,18 +619,18 @@ post "/new_task" do
   else
     session[:success] = successful_add(task[:title], "Tasks")
     update_taskfile(task)
-    
+
     redirect "/tasks/edit"
   end
 end
 
-# Formats "new event" form data, validates inputs, and adds the event to 
+# Formats "new event" form data, validates inputs, and adds the event to
 # custom_events.yml
 post "/new_event" do
   event = params.transform_keys(&:to_sym)
   event[:frequency] = params['frequency']
   session[:error] = validate_event(event)
-  
+
   if session[:error]
     configure_form(event)
     status 422
@@ -639,7 +638,7 @@ post "/new_event" do
   else
     session[:success] = successful_add(event[:title], "Events")
     update_eventfile(event)
-    
+
     redirect "/events/edit"
   end
 end
@@ -649,7 +648,7 @@ end
 post "/new_client" do
   data = params.transform_keys(&:to_sym)
   session[:error] = validate_client(data)
-  
+
   if session[:error]
     configure_form(data)
     status 422
@@ -658,21 +657,21 @@ post "/new_client" do
     directory_name = [data[:first_name], data[:last_name]].map do |name|
       name.downcase.split
     end.join("_")
-    
+
     directory_path = File.join(current_clients, directory_name)
     name = format_input(directory_name)
-    
+
     session[:success] = successful_add(name, "Current Clients")
-    
+
     data = format_client(data)
     Dir.mkdir(directory_path)
-    
+
     document_path = File.join(directory_path, 'documents')
     Dir.mkdir(document_path)
-    
+
     data_path = File.join(directory_path, 'data.yml')
     File.write(data_path, data.to_yaml)
-  
+
     redirect "/clients"
   end
 end
@@ -715,12 +714,12 @@ end
 post "/archive/:name" do
   old_path = File.join(current_clients, params[:name])
   new_path = File.join(archived_clients, params[:name])
-  
+
   FileUtils.mv(old_path, new_path)
-  
+
   name = format_input(params[:name])
   session[:success] = successful_move(name, "Archived Clients")
-  
+
   redirect "/clients"
 end
 
@@ -728,24 +727,24 @@ end
 post "/restore/:name" do
   old_path = File.join(archived_clients, params[:name])
   new_path = File.join(current_clients, params[:name])
-  
+
   FileUtils.mv(old_path, new_path)
-  
+
   name = format_input(params[:name])
   session[:success] = successful_move(name, "Current Clients")
-  
+
   redirect "/clients"
 end
 
-# Client directory is deleted from Archive 
+# Client directory is deleted from Archive
 post "/delete/:name" do
   path = File.join(archived_clients, params[:name])
-  
+
   FileUtils.remove_dir(path)
-  
+
   name = format_input(params[:name])
   session[:success] = successful_delete(name, "Archived Clients")
-  
+
   redirect "/clients"
 end
 
@@ -760,7 +759,7 @@ end
 post "/tasks/delete" do
   deleted_tasks = params.transform_values(&:keys)
   tasks = YAML.load_file(task_path)
-  
+
   tasks.each do |task|
     deleted_tasks.each do |day, titles|
       titles.each do |title|
@@ -770,14 +769,14 @@ post "/tasks/delete" do
       end
     end
   end
-  
+
   tasks.reject! { |task| task[:schedule].empty? }
-  
+
   message = join_and(deleted_tasks.values.flatten.uniq)
   session[:success] = successful_delete(message, "Tasks")
-  
+
   File.write(task_path, tasks.to_yaml)
-  
+
   redirect "/tasks/edit"
 end
 
@@ -785,16 +784,16 @@ end
 post "/events/delete" do
   events = YAML.load_file(event_path)
   deleted_events = params.keys
-  
+
   deleted_events.each do |deleted_event|
     events.delete_if { |event| event[:title] == deleted_event }
   end
-  
+
   message = join_and(deleted_events)
   session[:success] = successful_delete(message, "Events")
-  
+
   File.write(event_path, events.to_yaml)
-  
+
   redirect "/events/edit"
 end
 
@@ -802,7 +801,7 @@ end
 post "/:status/:client/documents/add" do
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients
-  
+
   file = params[:file][:tempfile]
   ext = File.extname(params[:file][:filename])
   filename = params[:filename]
@@ -821,7 +820,7 @@ post "/:status/:client/documents/add" do
     File.open(file_path, 'wb') do |f|
         f.write(file.read)
     end
-    
+
     redirect "/#{params[:status]}/#{params[:client]}/documents"
   end
 end
@@ -830,17 +829,17 @@ end
 post "/:status/:client/documents/delete" do
   @status = params[:status]
   group = @status == "current" ? current_clients : archived_clients
-  
+
   @deleted_files = params.select { |k,v| v == 'on' }.keys
   client_path = File.join(group, params[:client])
   document_path = File.join(client_path, 'documents')
-  
+
   @deleted_files.each do |filename|
     file_path = File.join(document_path, filename)
     File.delete(file_path)
   end
-  
+
   session[:success] = successful_file_delete(@deleted_files, params[:client])
-  
+
   redirect "/#{params[:status]}/#{params[:client]}/documents"
 end
